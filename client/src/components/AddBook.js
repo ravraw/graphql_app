@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { graphql, compose } from 'react-apollo';
 import {
   getAuthorsQuery,
@@ -9,26 +8,13 @@ import {
 
 class AddBook extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       name: '',
       genre: '',
       authorId: ''
     };
   }
-
-  onSubmitHandler(e) {
-    e.preventDefault();
-    this.props.addBookMutation({
-      variables: {
-        name: this.state.name,
-        genre: this.state.genre,
-        authorId: this.state.authorId
-      },
-      refetchQueries: [{ query: getBooksQuery }]
-    });
-  }
-
   displayAuthors() {
     var data = this.props.getAuthorsQuery;
     if (data.loading) {
@@ -43,29 +29,33 @@ class AddBook extends Component {
       });
     }
   }
+  submitForm(e) {
+    e.preventDefault();
+    // use the addBookMutation
+    this.props.addBookMutation({
+      variables: {
+        name: this.state.name,
+        genre: this.state.genre,
+        authorId: this.state.authorId
+      },
+      refetchQueries: [{ query: getBooksQuery }]
+    });
+  }
   render() {
     return (
-      <form id="add-book" onSubmit={this.onSubmitHandler.bind(this)}>
+      <form id="add-book" onSubmit={this.submitForm.bind(this)}>
         <div className="field">
           <label>Book name:</label>
           <input
             type="text"
-            onChange={e =>
-              this.setState({
-                name: e.target.value
-              })
-            }
+            onChange={e => this.setState({ name: e.target.value })}
           />
         </div>
         <div className="field">
           <label>Genre:</label>
           <input
             type="text"
-            onChange={e =>
-              this.setState({
-                genre: e.target.value
-              })
-            }
+            onChange={e => this.setState({ genre: e.target.value })}
           />
         </div>
         <div className="field">
