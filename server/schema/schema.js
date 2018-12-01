@@ -10,9 +10,9 @@ const {
 
 // dummy data
 const books = [
-  { name: 'Name of the Wind', genre: 'Fantasy', id: '1' },
-  { name: 'The Final Empire', genre: 'Fantasy', id: '2' },
-  { name: 'The Long Earth', genre: 'Sci-Fi', id: '3' }
+  { name: 'Name of the Wind', genre: 'Fantasy', id: '1', authorId: '1' },
+  { name: 'The Final Empire', genre: 'Fantasy', id: '2', authorId: '2' },
+  { name: 'The Long Earth', genre: 'Sci-Fi', id: '3', authorId: '3' }
 ];
 
 const authors = [
@@ -26,7 +26,13 @@ const BookType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    genre: { type: GraphQLString }
+    genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent, args) {
+        return authors.find(auth => auth.id === parent.authorId);
+      }
+    }
   })
 });
 
@@ -47,7 +53,7 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         // code to get data from db / other source
-        return books.find(obj => obj.id === args.id);
+        return books.find(bk => bk.id === args.id);
       }
     },
     author: {
@@ -55,7 +61,7 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         // code to get data from db / other source
-        return authors.find(obj => obj.id === args.id);
+        return authors.find(auth => auth.id === args.id);
       }
     }
   }
